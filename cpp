@@ -298,4 +298,59 @@ free(incomingStream);
 return 0;
 }
 
--------------------------------------------------------------------------------------
+----------------------------------------10---------------------------------------------
+
+ client.c
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/ipc.h>
+#include<sys/shm.h>
+struct data{
+char str[100];
+int flag;
+};
+void main()
+{
+key_t key = ftok("2.txt",'A');
+int shmid = shmget(key,1024,0777|IPC_CREAT);
+struct data *d = shmat(shmid,NULL,0);
+d->flag=0;
+while(d->flag!=1)
+{
+printf("\nWaiting");
+sleep(2);
+}
+printf("\nAccepted data is ");
+printf("%s",d->str);
+d->flag=-1;
+shmdt(d);
+}
+Server.c
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/ipc.h>
+#include<sys/shm.h>
+struct data{
+char str[100];
+int flag;
+};
+void main()
+{
+key_t key = ftok("2.txt",'A');
+int shmid = shmget(key,1024,0777|IPC_CREAT);
+struct data *d = shmat(shmid,NULL,0);
+d->flag=0;
+printf("\nEnter data ");
+scanf("%s",d->str);
+d->flag=1;
+while(d->flag!=-1)
+{
+printf("\nWaiting");
+sleep(2);
+}
+shmdt(d);
+shmctl(shmid,IPC_RMID,NULL);
+}
+
