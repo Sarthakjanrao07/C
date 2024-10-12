@@ -353,4 +353,165 @@ sleep(2);
 shmdt(d);
 shmctl(shmid,IPC_RMID,NULL);
 }
+---------------------------assignment 3--------------------------------
+//Fork
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+void main()
+{
+int status;
+pid_t pid;
+pid=fork();
+if(pid==0)
+{
+printf("\nThis is child process");
+printf("\nchild_id=%d",getpid());
+printf("\nchild's parent_id=%d",getppid());
+printf("\n");
+}
+else
+{
+printf("\nThis is parent process");
+printf("\nparent_id=%d", getpid());
+printf("\nparent's child_id=%d",pid);
+printf("\n");
+}
+}
 
+//Zombie
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+void main()
+{
+int status;
+pid_t pid;
+pid=fork();
+if(pid==0)
+{
+printf("\nThis is child process");
+printf("\nchild_id=%d",getpid());
+printf("\nchild's parent_id=%d",getppid());
+printf("\n");
+}
+else
+{
+sleep(2);
+system("ps");
+wait(&status);
+printf("\nThis is parent process\n");
+system("ps");
+printf("\nparent_id=%d", getpid());
+printf("\nparent's child_id=%d",pid);
+printf("\n");
+}
+}
+
+
+//Orphan
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+void main()
+{
+int status;
+pid_t pid;
+pid=fork();
+if(pid==0)
+{
+sleep(2);
+printf("\nThis is child process");
+printf("\nchild_id=%d",getpid());
+printf("\nchild's parent_id=%d",getppid());
+printf("\n");
+}
+else
+{
+printf("\nThis is parent process");
+printf("\nparent_id=%d", getpid());
+printf("\nparent's child_id=%d",pid);
+printf("\n");
+}
+}
+
+//Sorting within processes
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+void main()
+{
+int n;
+printf("\nEnter the size of array:");
+scanf("%d",&n);
+int arr[n];
+printf("\nEnter elements\n");
+for(int i=0;i<n;i++)
+{
+scanf("%d",&arr[i]);
+}
+int status;
+pid_t pid;
+int temp;
+pid=fork();
+if(pid==0)
+{
+printf("\nChild Process");
+printf("\nchild_id=%d",getpid());
+printf("\nchild's parent_id=%d",getppid());
+printf("\n");
+for(int i=0;i<5-1;i++)
+{
+for(int j=0;j<5-1-i;j++)
+{
+if(arr[j]<arr[j+1])
+{
+temp=arr[j];
+arr[j]=arr[j+1];
+arr[j+1]=temp;
+}
+}
+}
+printf("Array elements in descending order: \n ");
+for(int i=0;i<5;i++)
+{
+printf("%d \t",arr[i]);
+}
+}
+else
+{
+sleep(2);
+system("ps");
+wait(&status);
+printf("\nParent Process\n");
+system("ps");
+printf("\nparent_id=%d", getpid());
+printf("\nparent's child_id=%d",pid);
+printf("\n");
+for(int i=0;i<5-1;i++)
+{
+for(int j=0;j<5-1-i;j++)
+{
+if(arr[j]>arr[j+1]){
+temp=arr[j];
+arr[j]=arr[j+1];
+arr[j+1]=temp;
+}
+}
+}
+printf("Array elements in ascending order: \n");
+for(int i=0;i<5;i++)
+{
+printf(" %d \t",arr[i]);
+}
+printf("\n");
+}
+}
