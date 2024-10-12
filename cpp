@@ -515,3 +515,101 @@ printf(" %d \t",arr[i]);
 printf("\n");
 }
 }
+
+------------------------------Assignment 4-------------------------------------------
+//Binary Search
+#include<sys/types.h> 
+#include<stdlib.h> 
+#include <stdio.h> 
+#include<unistd.h>
+int binsearch(int arr[], int low, int high, int target)
+{
+if (high >= low) {
+int mid = low + (high - low) / 2; 
+if (arr[mid] == target)
+return mid;
+if (arr[mid] > target)
+return binsearch(arr, low, mid - 1, target);
+else
+}
+return binsearch(arr, mid + 1, high, target);
+return -1;
+}
+int main(int argc,char* argv[])
+{
+int len=argc-1; 
+int arr[argc-1]; 
+int target; 
+pid_t pid;
+printf("count of arguments:%d",argc);
+for(int i=1;i<argc;i++)
+{
+arr[i-1]=atoi(argv[i]);
+}
+printf("\nsorted array:\n"); 
+for(int i=0;i<len;i++)
+{
+printf("%d \t",arr[i]);
+}
+printf("\n");
+printf("\nEnter number to search:"); 
+scanf("%d",&target);
+int result= binsearch(arr,0,len,target); 
+if(result!=-1)
+{
+printf("Number is present at index:%d\n",result);
+}
+else
+{
+printf("Number is absent\n");
+}
+printf("process id: %d",getpid()); 
+printf("\nparent process id: %d",getppid());
+return 0;
+}
+
+-----------------assign 4----------------------------------//command line argument------------------------------
+
+//Command line arguments
+#include<stdio.h> 
+#include<sys/types.h> 
+#include<sys/wait.h> 
+#include<unistd.h> 
+#include<stdlib.h>
+void main(int argc, char*argv[])
+{
+int count,i; 
+int status; 
+count =argc-1; 
+int len=argc-2;
+char*temp[count]; 
+for(i=0;i<count;i++)
+{
+temp[i]=argv[i+1];
+}
+temp[i]=NULL; 
+for(i=0;i<len;i++)
+{
+for(int j=1;j<len-i;j++)
+{
+if(atoi(temp[j])>atoi(temp[j+1]))
+{
+char* res=temp[j]; 
+temp[j]=temp[j+1];
+temp[j+1]=res;
+}
+}
+}
+pid_t pid; 
+pid=fork(); 
+if(pid==0)
+{
+execv(temp[0],temp); 
+printf("Hello");
+}
+else
+{
+wait(&status); printf(“\nParent Process”);
+printf("\n\nParent process id: %d\n",getpid());
+}
+}
